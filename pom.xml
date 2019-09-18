@@ -33,6 +33,15 @@
             <version>2.1_3</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.junit/com.springsource.org.junit -->
+        <dependency>
+            <groupId>org.junit</groupId>
+            <artifactId>com.springsource.org.junit</artifactId>
+            <version>4.7.0</version>
+            <scope>test</scope>
+        </dependency>
+
+
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>

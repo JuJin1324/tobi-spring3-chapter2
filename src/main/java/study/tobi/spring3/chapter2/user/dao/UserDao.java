@@ -1,5 +1,6 @@
 package study.tobi.spring3.chapter2.user.dao;
 
+import lombok.Cleanup;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import study.tobi.spring3.chapter2.user.User;
@@ -22,25 +23,27 @@ public class UserDao {
     private DataSource dataSource;
 
     public void add(User user) throws SQLException {
+        @Cleanup
         Connection c = dataSource.getConnection();
 
+        @Cleanup
         PreparedStatement ps = c.prepareStatement("insert into users(id, name, password) values (?, ?, ?)");
         ps.setString(1, user.getId());
         ps.setString(2, user.getName());
         ps.setString(3, user.getPassword());
 
         ps.executeUpdate();
-
-        ps.close();
-        c.close();
     }
 
     public User get(String id) throws SQLException {
+        @Cleanup
         Connection c = dataSource.getConnection();
 
+        @Cleanup
         PreparedStatement ps = c.prepareStatement("select id, name, password from users where id = ?");
         ps.setString(1, id);
 
+        @Cleanup
         ResultSet rs = ps.executeQuery();
         rs.next();
         User user = new User();
@@ -48,10 +51,30 @@ public class UserDao {
         user.setName(rs.getString("name"));
         user.setPassword(rs.getString("password"));
 
-        rs.close();
-        ps.close();
-        c.close();
-
         return user;
+    }
+
+    public void deleteAll() throws SQLException {
+        @Cleanup
+        Connection c = dataSource.getConnection();
+
+        @Cleanup
+        PreparedStatement ps = c.prepareStatement("delete from users");
+        ps.executeUpdate();
+    }
+
+    public int getCount() throws SQLException {
+        @Cleanup
+        Connection c = dataSource.getConnection();
+
+        @Cleanup
+        PreparedStatement ps = c.prepareStatement("select count(*) from users");
+
+        @Cleanup
+        ResultSet rs = ps.executeQuery();
+        rs.next();
+        int count = rs.getInt(1);
+
+        return count;
     }
 }
