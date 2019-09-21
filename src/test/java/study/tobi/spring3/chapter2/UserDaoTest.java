@@ -4,8 +4,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -15,7 +13,7 @@ import study.tobi.spring3.chapter2.user.dao.UserDao;
 import java.sql.SQLException;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 /**
  * Created by Yoo Ju Jin(yjj@hanuritien.com)
@@ -23,28 +21,22 @@ import static org.junit.Assert.*;
  */
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "/applicationContext.xml")
+@ContextConfiguration(locations = "/test-applicationContext.xml")
 public class UserDaoTest {
 
     @Autowired
-    private ApplicationContext context;
-
     private UserDao dao;
+
     private User user1;
     private User user2;
     private User user3;
 
     @Before
-    public void setUp() throws Exception {
-//        context = new AnnotationConfigApplicationContext(DaoFactory.class);
-        dao = context.getBean("userDao", UserDao.class);    // 픽스처
+    public void setUp() {
 
         user1 = new User("gyumee", "박성철", "springno1");     // 픽스터
         user2 = new User("leegw700", "이길원", "springno2");   // 픽스터
         user3 = new User("bumjin", "박범진", "springno3");     // 픽스터
-
-        System.out.println(this.context);
-        System.out.println(this);
     }
 
     @Test
@@ -82,7 +74,7 @@ public class UserDaoTest {
         assertThat(dao.getCount(), is(3));
     }
 
-    @Test(expected= EmptyResultDataAccessException.class)
+    @Test(expected = EmptyResultDataAccessException.class)
     public void getUserFailure() throws SQLException {
 
         dao.deleteAll();

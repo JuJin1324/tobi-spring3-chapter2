@@ -118,3 +118,38 @@ public class UserDaoTest {
 * ApplicationContext.xml 에는 ApplicationContext 클래스 빈이 없지만 @Autowired 를 통한  
 DI가 가능했다. 이유는 스프링 애플리케이션 컨택스트는 초기화할 때 자기 자신도 빈으로 등록하기 때문이다.
 
+* @Autowired 가 붙은 인스턴스 변수가 있으면, 테스트 컨텍스트 프레임워크는 <b>변수 타입</b>과 일치하는  
+컨텍스트 내의 빈을 찾는다. 빈 주입 기준은 다음과 같다.
+    - 먼저 변수 타입 일치에 따라 주입
+    - 변수 타입이 같은 빈이 여러개인 경우 변수 이름과 빈 이름 매칭하여 주입
+    
+* @DirtiesContext : 스프링의 테스트 컨텍스트 프레임워크에게 해당 클래스의 테스트에서  
+애플리케이션 컨텍스트의 상태를 변경한다는 것을 알려준다.  
+예시)
+```java
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = "/test-applicationContext.xml")
+@DirtiesContext
+public class UserDaoTest {
+
+    @Autowired
+    private UserDao dao;
+
+    @Before
+    public void setUp() {
+        /* application context 상태 변경 : xml 에 등록된 datasource 임의로 변경 */
+        DataSource dataSource = new SingleConnectionDataSource(
+                        "jdbc:mysql://localhost/testdb", 
+                        "spring", 
+                        "book" , 
+                        true);
+        dao.setDataSource(dataSource);      
+    }
+}
+```
+
+* @RunWith 를 통해서 스프링 컨텍스트는 모든 테스트 클래스에서 공유되지만 @DirtiesContext를 선언한  
+클래스와는 공유하지 않는다.(@DirtiesContext를 선언한 클래스에서는 컨텍스트가 따로 만들어지며 해당 테스트 클래스에서만  
+사용된다.)
+
+
