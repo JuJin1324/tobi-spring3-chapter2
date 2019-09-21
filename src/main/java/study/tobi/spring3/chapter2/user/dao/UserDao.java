@@ -3,6 +3,7 @@ package study.tobi.spring3.chapter2.user.dao;
 import lombok.Cleanup;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.dao.EmptyResultDataAccessException;
 import study.tobi.spring3.chapter2.user.User;
 
 import javax.sql.DataSource;
@@ -45,11 +46,15 @@ public class UserDao {
 
         @Cleanup
         ResultSet rs = ps.executeQuery();
-        rs.next();
-        User user = new User();
-        user.setId(rs.getString("id"));
-        user.setName(rs.getString("name"));
-        user.setPassword(rs.getString("password"));
+        User user = null;
+        if (rs.next()) {
+            user = new User();
+            user.setId(rs.getString("id"));
+            user.setName(rs.getString("name"));
+            user.setPassword(rs.getString("password"));
+        }
+
+        if (user == null) throw new EmptyResultDataAccessException(1);
 
         return user;
     }
