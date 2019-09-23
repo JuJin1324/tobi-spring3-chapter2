@@ -176,8 +176,36 @@ public class UserDaoTest {
     학습 테스트에 애플리케이션에서 자주 사용하는 기능에 대한 테스트를 만들어놓았다면 새로운 버전의 프레임워크나  
     제품을 학습 테스트에만 먼저 적용해볼 수 있다.
    
+## 테스트 검증 메서드 정리
 
+### Package : org.hamcrest.CoreMatchers 
+* is()
+    * is는 두가지 용도로 사용할 수 있다.
+    * A is B와 같이 비교값이 서로 같은지 여부를 확인할 경우  
+    `assertThat("Simple Text", is("Simple Text"));`
+    * 이경우 `assertThat("Simple Text", is(equalTo("Simple Text")))`와 동일하게 사용할 수 있다.
+       
+    * 다른 매쳐를 꾸며주는 용도로 사용. 매쳐에는 영향을 끼치지 않으며, 조금 더 표현력이 있도록 변경하여 준다.  
+    `assertThat("Simple Text", is(not("simpleText")));`
+    * 위의 경우 is가 빠지더라도 문제없이 작동된다. 하지만 is가 있음으로써 쉽게 읽혀지는 테스트 코드가 된다.
     
+* not()
+    * is와 동일하게 두가지 경우로 사용할 수 있다.
+    * 내부에 매쳐를 선언할 경우 내부 매쳐의결과를 뒤집는다.  
+        `assertThat(cheese, is(not(equalTo(smelly))))`
+    
+    * not뒤에 값이 나올 경우, 같지 않을 경우 테스트가 통과한다.
+        `assertThat("Test", not("tEST"));`
+
+* sameInstance()
+    * 비교매쳐의 값과 같은 인스턴스일 경우 테스트가 통과한다. theInstance 와 동일  
+    `assertThat("Test", not(sameInstance("not Same Instance")));`
+    
+* hasItem()
+    * 배열에서 매쳐가 통과하는 값이 하나 이상이 있는지 여부를 검사한다.
+    `assertThat(Arrays.asList("foo", "bar"), hasItem("bar"));`
+    
+*  
 
 
 
