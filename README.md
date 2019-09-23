@@ -178,6 +178,24 @@ public class UserDaoTest {
    
 ## 테스트 검증 메서드 정리
 
+### JUnit static
+* assertThat()
+    * `assertThat(T actual, Matcher<? super T> matcher)`의 형태로 메서드를 사용하여 두 값을 비교할 수 있다. 
+    * 첫번째 파라미터에는 비교대상 값을, 두번째 파라미터로는 비교로직이 담긴 Matcher가 사용된다.
+    * 예시)  
+  ```java
+  int result = calculator.add(4, 6);
+  assertThat(result, is(10));
+  ```
+
+* assertTrue()
+    * `assertThat() + is(true)`
+
+* either().or()
+    * either A or B 형식으로 matcher를 사용할 수 있게 해 준다.  
+    A, B 매쳐 둘중 하나가 성공할 경우 테스트가 성공한다.  
+    `assertThat("fan", either(containsString(“a”)).or(containsString(“b”)))`
+
 ### Package : org.hamcrest.CoreMatchers 
 * is()
     * is는 두가지 용도로 사용할 수 있다.
@@ -205,8 +223,22 @@ public class UserDaoTest {
     * 배열에서 매쳐가 통과하는 값이 하나 이상이 있는지 여부를 검사한다.
     `assertThat(Arrays.asList("foo", "bar"), hasItem("bar"));`
     
-*  
+* equalTo() 
+    * is() 와 동일
+   
+### 주의
+* JUnitTest 예제에서 다음 부분은 문제가 있음.
+```java
+    @Autowired
+    static ApplicationContext context;
+```
+@Autowired 애노테이션 사용시에 사용 변수에 static을 붙이면 해당 변수 사용 불가능.
+다음과 같은 warning이 로그에 남는다.
+```log
+경고: Autowired annotation is not supported on static fields: static org.springframework.context.ApplicationContext study.tobi.spring3.chapter2.JUnitTest.context
+```
 
 
 
-
+## 참조 자료 링크
+* [assertThat](http://sejong-wiki.appspot.com/assertThat)
