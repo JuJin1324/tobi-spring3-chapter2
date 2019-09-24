@@ -238,7 +238,17 @@ public class UserDaoTest {
 경고: Autowired annotation is not supported on static fields: static org.springframework.context.ApplicationContext study.tobi.spring3.chapter2.JUnitTest.context
 ```
 
+## 버그 테스트
+* 버그 테스트란 코드에 오류가 있을 때 그 오류를 가장 잘 드러낼줄 수 있는 테스트를 말한다.
 
+* 버그 테스트는 실패하도록 만들어야 한다. 버그가 원인이 되서 테스트가 실패하는 코드를 만드는 것이다.
+
+* 그러고 나서 버그 테스트가 성공할 수 있도록 애플리케이션 코드를 수정하고 테스트가 성공하면 버그 해결.
+
+## 정리
+* 테스트는 자동화돼야 하고, 빠르게 실행할 수 있어야 한다.
+
+* 테스트 결과는 일관성이 있어야 한다. 코드의 변경 없이 환경이나 테스트 실행 순서에 따라서 결과가 달라지면 안 된다.
 
 ## 참조 자료 링크
 * [assertThat](http://sejong-wiki.appspot.com/assertThat)

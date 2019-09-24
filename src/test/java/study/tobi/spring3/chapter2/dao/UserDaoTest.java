@@ -1,4 +1,4 @@
-package study.tobi.spring3.chapter2;
+package study.tobi.spring3.chapter2.dao;
 
 import org.junit.Before;
 import org.junit.Test;
