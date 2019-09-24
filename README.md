@@ -107,7 +107,8 @@ public class UserDaoTest {
 
 * 스프링 JUnit 확장기능은 테스트가 실행되기 전에 딱 한 번만 애플리케이션 컨택스트를 만들어두고,  
 테스트 오브젝트가 만들어질 때마다 특별한 방법을 이용해 애플리케이션 컨텍스트 자신을 테스트 오브젝트의  
-특정 필드에 주입해주는 것이다. 일종의 DI라고 볼 수 있다.
+특정 필드에 주입해주는 것이다. 일종의 DI라고 볼 수 있다. (스프링 애플리케이션 컨택스트는 초기화할 때  
+자기 자신도 빈으로 등록하기 때문에 테스트 클래스에서 다음과 같이 사용이 가능하다.)
 
       @Autowired
       private ApplicationContext context;
@@ -120,11 +121,10 @@ DI가 가능했다. 이유는 스프링 애플리케이션 컨택스트는 초�
 
 * @Autowired 가 붙은 인스턴스 변수가 있으면, 테스트 컨텍스트 프레임워크는 <b>변수 타입</b>과 일치하는  
 컨텍스트 내의 빈을 찾는다. 빈 주입 기준은 다음과 같다.
-    - 먼저 변수 타입 일치에 따라 주입
-    - 변수 타입이 같은 빈이 여러개인 경우 변수 이름과 빈 이름 매칭하여 주입
+    - 먼저 <b>변수 타입</b> 일치에 따라 주입
+    - 변수 타입이 같은 빈이 여러개인 경우 <b>변수 이름과 빈 이름 매칭</b>하여 주입
     
-* @DirtiesContext : 스프링의 테스트 컨텍스트 프레임워크에게 해당 클래스의 테스트에서  
-애플리케이션 컨텍스트의 상태를 변경한다는 것을 알려준다.  
+* @DirtiesContext : 스프링의 테스트 컨텍스트 프레임워크에게 해당 클래스의 테스트에서 애플리케이션 컨텍스트의 상태를 변경한다는 것을 알려준다.  
 예시)
 ```java
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -137,7 +137,7 @@ public class UserDaoTest {
 
     @Before
     public void setUp() {
-        /* application context 상태 변경 : xml 에 등록된 datasource 임의로 변경 */
+        /* application context 상태 변경 : xml 에 빈 등록한 dao(UserDao)의 DI dataSource를 임의로 변경 */
         DataSource dataSource = new SingleConnectionDataSource(
                         "jdbc:mysql://localhost/testdb", 
                         "spring", 
