@@ -23,6 +23,19 @@
 
 ```
 
+### DB(MySQL) 스키마 및 테이블 생성
+```mysql
+-- 스키마 생성 : testdb
+create database testdb;
+
+-- testdb 스키마에 users 테이블 생성 
+create table testdb.users(
+    id varchar(10) primary key ,
+    name varchar(20) not null ,
+    password varchar(10) not null
+);
+```
+
 ## 테스트 검증의 자동화
 ### 테스트의 결과
 * 모든 테스트는 <b>성공</b>과 <b>실패</b>의 두 가지 결과를 가짐.
