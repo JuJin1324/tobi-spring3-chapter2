@@ -1,15 +1,13 @@
-package study.tobi.spring3.chapter2.dao;
+package study.tobi.spring3.chapter2.db.access;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import study.tobi.spring3.chapter2.user.User;
-import study.tobi.spring3.chapter2.user.dao.UserDao;
+import org.springframework.jdbc.datasource.SingleConnectionDataSource;
+import study.tobi.spring3.chapter2.user.db.access.UserDao;
+import study.tobi.spring3.chapter2.user.db.entity.User;
 
+import javax.sql.DataSource;
 import java.sql.SQLException;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -20,11 +18,10 @@ import static org.junit.Assert.assertThat;
  * Created Date : 2019-09-18
  */
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "/test-applicationContext.xml")
 public class UserDaoTest {
 
-    @Autowired
+    private static final String MYSQL_TESTDB_URL = "jdbc:mysql://localhost:3306/testdb?useSSL=false";
+
     private UserDao dao;
 
     private User user1;
@@ -33,6 +30,10 @@ public class UserDaoTest {
 
     @Before
     public void setUp() {
+        DataSource dataSource = new SingleConnectionDataSource(MYSQL_TESTDB_URL, "scott", "tiger", true);
+
+        dao = new UserDao();
+        dao.setDataSource(dataSource);
 
         user1 = new User("gyumee", "박성철", "springno1");     // 픽스터
         user2 = new User("leegw700", "이길원", "springno2");   // 픽스터

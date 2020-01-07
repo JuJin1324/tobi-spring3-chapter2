@@ -7,20 +7,20 @@
 
     <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
         <property name="driverClass" value="com.mysql.jdbc.Driver" />
-        <property name="url" value="jdbc:mysql://192.168.0.4:3306/spring3?useSSL=false" />
+        <property name="url" value="jdbc:mysql://192.168.0.11:3306/spring3?useSSL=false" />
 <!--        <property name="url" value="jdbc:mysql://192.168.0.95:3306/spring3?useSSL=false" />-->
         <property name="username" value="scott" />
         <property name="password" value="tiger" />
     </bean>
-    <bean id="userDao" class="study.tobi.spring3.chapter2.user.dao.UserDao">
+    <bean id="userDao" class="study.tobi.spring3.chapter2.user.db.access.UserDao">
         <property name="dataSource" ref="dataSource" />
     </bean>
 
-    <bean id="accountDao" class="study.tobi.spring3.chapter2.user.dao.AccountDao">
+    <bean id="accountDao" class="study.tobi.spring3.chapter2.user.db.access.AccountDao">
         <property name="dataSource" ref="dataSource" />
     </bean>
 
-    <bean id="messageDao" class="study.tobi.spring3.chapter2.user.dao.MessageDao">
+    <bean id="messageDao" class="study.tobi.spring3.chapter2.user.db.access.MessageDao">
         <property name="dataSource" ref="dataSource" />
     </bean>
 

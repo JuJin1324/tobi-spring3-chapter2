@@ -7,7 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import study.tobi.spring3.chapter2.user.dao.UserDao;
+import study.tobi.spring3.chapter2.db.configure.JUnitTestFactory;
+import study.tobi.spring3.chapter2.user.db.access.UserDao;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -24,7 +25,8 @@ import static org.junit.matchers.JUnitMatchers.either;
  */
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "/junit.xml")
+//@ContextConfiguration(locations = "/junit.xml")
+@ContextConfiguration(classes = JUnitTestFactory.class)
 public class JUnitTest {
     @Autowired
     ApplicationContext context;

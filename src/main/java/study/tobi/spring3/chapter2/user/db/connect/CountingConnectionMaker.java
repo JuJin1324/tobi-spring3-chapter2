@@ -1,7 +1,8 @@
-package study.tobi.spring3.chapter2.user.dao;
+package study.tobi.spring3.chapter2.user.db.connect;
 
 import lombok.AccessLevel;
 import lombok.Getter;
+import study.tobi.spring3.chapter2.user.db.connect.ConnectionMaker;
 
 import java.sql.Connection;
 import java.sql.SQLException;

@@ -231,7 +231,10 @@ public void getUserFailure() throws SQLException {
 * Spring 에서 제공하는 테스트를 위한 애플리케이션 컨택스트 관리
 ```java
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "/applicationContext.xml")
+/* locations -> classes 
+   SpringBoot로 넘어가면서 XML 설정파일보다는 Java 클래스를 사용 */
+//@ContextConfiguration(locations = "/applicationContext.xml")
+@ContextConfiguration(classes = DaoFactory.class)
 public class UserDaoTest {
 
     @Autowired
@@ -241,8 +244,7 @@ public class UserDaoTest {
 * JUnit 프레임워크의 테스트 실행 확장기능 지정 
     - @RunWith(SpringJUnit4ClassRunner.class)
     - 다음과 같이 지정해주면 JUnit이 테스트를 진행하는 중에 테스트가 사용할 애플리케이션 컨텍스트를 만들고 관리하는 작업을 진행해준다.
-* @ContextConfiguration(locations = "/applicationContext.xml")를 통해서 
-빈이 등록되어있는 컨텍스트 configuration(설정) xml 의 위치를 지정한다.
+* @ContextConfiguration(classes = DaoFactory.class)를 통해서 빈이 등록되어있는 configuration(설정) 자바 클래스의 위치를 지정한다.
 
 * 테스트 메서드의 컨텍스트 공유
     - 스프링 JUnit 확장기능은 테스트가 실행되기 전에 딱 한 번만 애플리케이션 컨택스트를 만들어두고, 
@@ -272,12 +274,21 @@ public class UserDaoTest {
     - 하지만, 꼭 필요하지 않다면 일단 코드처럼 인터페이스를 사용해서 느슨한 연결을 하는 편이 좋다.
 
 ### 2.4.2 DI와 테스트
-
-* @DirtiesContext : 스프링의 테스트 컨텍스트 프레임워크에게 해당 클래스의 테스트에서 애플리케이션 컨텍스트의 상태를 변경한다는 것을 알려준다.  
+* 하나의 정해진 클래스만 사용할 건데도 인터페이스를 두고 DI를 해야하는 이유
+    - 첫번째. 개발에서 절대 바뀌지 않는 것은 없다. => 클래스가 변경될 가능성은 0프로가 아니다.
+    - 두번째. 다른 차원의 서비스 기능을 도입할 수 있다. => CountingConnectionMaker처럼 기능 + 알파를 추가할 수 있다.
+    - 세번째. 테스트에 좋음. 아무튼 좋음. 나중에 추가 설명.
+* 테스트 코드에 의한 DI 
+    -  현재 DaoFactory 클래스에서 설정한 DataSource의 DB가 운영 DB라고 가정해보자. 
+    테스트할 시에 운영 DB를 가지고 더미 데이터를 생성, 수정, 삭제하는 짓은 미친짓임으로 해당 테스트 작업은 테스트 DB를 연결하여 테스트해보자.
+    (DataSource 변경)
+    - @DirtiesContext : 스프링의 테스트 컨텍스트 프레임워크에게 해당 클래스의 테스트에서만 애플리케이션 컨텍스트의 상태를 변경
+    (이미 @Autowired 한 UserDao에 새로운 dataSource를 주입)한다는 것을 알려준다.  
 예시)
 ```java
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "/test-applicationContext.xml")
+//@ContextConfiguration(locations = "/applicationContext.xml")
+@ContextConfiguration(classes = DaoFactory.class)
 @DirtiesContext
 public class UserDaoTest {
 
@@ -297,14 +308,25 @@ public class UserDaoTest {
 }
 ```
 
-* @RunWith 를 통해서 스프링 컨텍스트는 모든 테스트 클래스에서 공유되지만 @DirtiesContext를 선언한  
-클래스와는 공유하지 않는다.(@DirtiesContext를 선언한 클래스에서는 컨텍스트가 따로 만들어지며 해당 테스트 클래스에서만  
-사용된다.)
+* 해당 코드의 문제점 : 애플리에키션 컨텍스트가 관리하는 빈인 UserDao의 기존 의존관계를 무시하고 강제로 DI 하였다.(심지어 빈 객체도 아님)
+모든 테스트 클래스는 단 하나의 애플리케이션 컨택스트를 사용함으로 UserDao의 바뀐 의존관계는 다음 테스트하는 클래스에도 영향을 주게된다.
+* @RunWith 를 통해서 스프링 컨텍스트는 모든 테스트 클래스에서 공유되지만 @DirtiesContext를 선언한 클래스와는 공유하지 않는다.
+(@DirtiesContext를 선언한 클래스에서는 컨텍스트가 따로 만들어지며 해당 테스트 클래스에서만 사용된다.)
 
-* 스프링 컨테이너로 테스트를 하기에는 스프링 컨테이너를 로드하는 시간이 오래걸리기 때문에 단위 테스트의 경우에는  
-스프링 컨테이너없이 자체적으로 DI 하여 테스트를 진행하는 것이 바람직하다.  
+* 테스트를 위한 별도의 DI 설정
+    - 애플리케이션 컨텍스트를 해당 클래스 때문에 따로 만들어야하고 빈 객체도 아닌 오브젝트를 주입하는 것도 단점이 된다.
+    - 차라리 DaoFactory에서 DB연결 부분(스키마 spring3 -> testdb)을 변경한 TestDaoFactory를 Configuration으로 추가하는 것이 바람직하다. 
 
-## 학습 테스트
+* 컨테이너 없는 DI 테스트 : 현재 테스트는 스프링 자체 기능은 사용하지 않고 있다.(DI는 스프링 자체 기능이 아님)
+또한 스프링 컨테이너로 테스트를 하기에는 스프링 컨테이너를 로드하는 시간이 오래걸리기 때문에 단위 테스트의 경우에는 스프링 컨테이너없이 자체적으로 DI 하여 
+테스트를 진행하는 것이 바람직하다.  
+
+* DI를 이용한 테스트 방법 선택
+    - 항상 스프링 컨테이너 <b>없이</b> 테스트할 수 있는 방법을 가장 우선적으로 고려한다.
+    - 의존관계가 복잡한 오브젝트에 대해서 테스트할 시에 스프링 컨테이너의 도움을 받으면 편하다. 대신 테스트 전용 설정파일(자바 클래스 혹은 XML)을
+    따로 만들어서 테스트한다.
+
+### 2.5 학습 테스트로 배우는 스프링
 * 자신이 만들지 않은 프레임워크나 다른 개발팀에서 만들어서 제공하는 라이브러리 등에 대한 테스트  
 
 * 학습 테스트의 목적은 자신이 사용할 API나 프레임워크의 기능을 테스트 해보면서 사용 방법을 익히는 것 및  

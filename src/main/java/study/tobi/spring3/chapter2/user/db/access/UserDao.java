@@ -1,10 +1,10 @@
-package study.tobi.spring3.chapter2.user.dao;
+package study.tobi.spring3.chapter2.user.db.access;
 
 import lombok.Cleanup;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.dao.EmptyResultDataAccessException;
-import study.tobi.spring3.chapter2.user.User;
+import study.tobi.spring3.chapter2.user.db.entity.User;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
