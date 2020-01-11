@@ -17,7 +17,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 /**
- * Created by Yoo Ju Jin(yjj@hanuritien.com)
+ * Created by Yoo Ju Jin(jujin1324@daum.net)
  * Created Date : 2019-09-18
  */
 

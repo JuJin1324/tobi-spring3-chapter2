@@ -20,7 +20,7 @@ import static org.junit.internal.matchers.IsCollectionContaining.hasItem;
 import static org.junit.matchers.JUnitMatchers.either;
 
 /**
- * Created by Yoo Ju Jin(yjj@hanuritien.com)
+ * Created by Yoo Ju Jin(jujin1324@daum.net)
  * Created Date : 2019-09-23
  */
 
