@@ -154,31 +154,31 @@ User의 등록 값을 일일히 입력하고 버튼을 누르는 작업을 해�
 
 deleteAll 메서드 및 getCount() 메서드를 추가한다.
 ```java
-    public void deleteAll() throws SQLException {
-        Connection c = dataSource.getConnection();
+public void deleteAll() throws SQLException {
+    Connection c = dataSource.getConnection();
 
-        PreparedStatement ps = c.prepareStatement("delete from users");
-        ps.executeUpdate();
+    PreparedStatement ps = c.prepareStatement("delete from users");
+    ps.executeUpdate();
 
-        ps.close();
-        c.close();
-    }
+    ps.close();
+    c.close();
+}
 
-    public int getCount() throws SQLException {
-        Connection c = dataSource.getConnection();
+public int getCount() throws SQLException {
+    Connection c = dataSource.getConnection();
 
-        PreparedStatement ps = c.prepareStatement("select count(*) from users");
+    PreparedStatement ps = c.prepareStatement("select count(*) from users");
 
-        ResultSet rs = ps.executeQuery();
-        rs.next();
-        int count = rs.getInt(1);
+    ResultSet rs = ps.executeQuery();
+    rs.next();
+    int count = rs.getInt(1);
 
-        rs.close();
-        ps.close();
-        c.close();
+    rs.close();
+    ps.close();
+    c.close();
 
-        return count;
-    }
+    return count;
+}
 ```
 Intellij IDEA 사용시에 사용 중인 데이터베이스를 등록해주면 preparedStatement에 쿼리 문법을 자동으로 체크해준다.(기초적 문법)
 
@@ -238,8 +238,8 @@ public void getUserFailure() throws SQLException {
 ### 2.3.5 테스트 코드 개선
 리팩토링 : 중복되는 코드를 메서드로 따로 추출
 ```java
-    ApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");
-    UserDao dao = context.getBean("userDao", UserDao.class);
+ApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");
+UserDao dao = context.getBean("userDao", UserDao.class);
 ```
 위의 중복된 코드를 별로의 메서드로 추출하는 것이 가장 일반적인 방법이지만 JUnit에서 제공하는 <b>@Before</b> 애노테이션이 붙은 <b>setUp()</b>메서드를 추가한다.
 
@@ -306,8 +306,8 @@ JUnit 프레임워크의 테스트 실행 확장기능 지정
 테스트 오브젝트가 만들어질 때마다 특별한 방법을 이용해 애플리케이션 컨텍스트 자신을 테스트 오브젝트의 특정 필드에 주입해주는 것이다.    
 일종의 DI라고 볼 수 있다. (스프링 애플리케이션 컨택스트는 초기화할 때 자기 자신도 빈으로 등록하기 때문에 테스트 클래스에서 다음과 같이 사용이 가능하다.)
 ```java
-      @Autowired
-      private ApplicationContext context;
+@Autowired
+private ApplicationContext context;
 ```
 
 스프링 테스트 컨텍스트 프레임워크는 하나의 테스트 클래스 안에서 ApplicationContext를 공유하는 것이 전부가 아니라 설정파일 
@@ -424,10 +424,9 @@ JUnit static 메서드
 <b>assertThat()</b>
 * `assertThat(T actual, Matcher<? super T> matcher)`의 형태로 메서드를 사용하여 두 값을 비교할 수 있다. 
 * 첫번째 파라미터에는 비교대상 값을, 두번째 파라미터로는 비교로직이 담긴 Matcher가 사용된다.
-* 예시
 ```java
-  int result = calculator.add(4, 6);
-  assertThat(result, is(10));
+int result = calculator.add(4, 6);
+assertThat(result, is(10));
 ```
 
 <b>assertTrue()</b>
@@ -482,8 +481,8 @@ assertThat(Arrays.asList("foo", "bar"), hasItem("bar"));
 is() 와 동일   
 ※ 주의 : JUnitTest 예제에서 다음 부분은 문제가 있음.
 ```java
-    @Autowired
-    static ApplicationContext context;
+@Autowired
+static ApplicationContext context;
 ```
 @Autowired 애노테이션 사용시에 사용 변수에 static을 붙이면 해당 변수 사용 불가능.
 다음과 같은 warning이 로그에 남는다.
